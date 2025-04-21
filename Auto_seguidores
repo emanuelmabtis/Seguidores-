@@ -1,0 +1,48 @@
+<?php
+require 'vendor/autoload.php'; // Mercado Pago SDK
+
+// Configuração do Mercado Pago
+MercadoPago\SDK::setAccessToken('SEU_ACCESS_TOKEN');
+
+// Função de adicionar seguidores
+function adicionarSeguidores($quantidade, $link) {
+    // Integração com API de seguidores
+    echo "Você comprou $quantidade seguidores para o link: $link";
+}
+
+// Gerar link de pagamento via Mercado Pago
+$preference = new MercadoPago\Preference();
+$item = new MercadoPago\Item();
+$item->title = 'Serviço de Seguidores';
+$item->quantity = 1;
+$item->unit_price = 100.00; // Preço do serviço
+$preference->items = array($item);
+$preference->back_urls = array(
+    "success" => "https://seusite.com/success.php",
+    "failure" => "https://seusite.com/failure.php",
+    "pending" => "https://seusite.com/pending.php"
+);
+$preference->auto_return = "approved";
+$preference->save();
+$mercadoPagoLink = $preference->init_point;
+
+// Exibir link de pagamento
+echo "Clique para pagar com Mercado Pago: <a href=\"$mercadoPagoLink\">Pagar com Mercado Pago</a><br>";
+
+// Gerar link Pix
+$pixKey = '86318823565';
+$linkPix = 'pix://' . $pixKey;
+echo "Clique para pagar com Pix: <a href=\"$linkPix\">Pagar com Pix</a><br>";
+
+// Simulação de saldo do cliente
+$clienteSaldo = 100.00; // Exemplo de saldo após pagamento
+
+if ($clienteSaldo >= 100.00) {
+    echo "Você tem saldo suficiente para comprar seguidores!<br>";
+    $quantidadeDeSeguidores = 100;
+    $linkInstagram = 'http://instagram.com/seuusuario';
+    adicionarSeguidores($quantidadeDeSeguidores, $linkInstagram);
+} else {
+    echo "Saldo insuficiente para comprar seguidores.";
+}
+?>
